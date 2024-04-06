@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -14,20 +14,46 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
+}*/
+
+@layer {
+  html,
+  body,
+  html body #root {
+    @apply h-screen;
+    @apply font-inter;
+  }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer components {
+  .link,
+  a {
+    @apply text-primary;
+  }
+
+  [aria-invalid='true'] input {
+    @apply border-error focus-visible:ring-primary;
+  }
+}
+
+
+*, html, body {
+  @apply font-inter;
+  background: #FAFCFD;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .text-destructive{
+    @apply text-error;
+  }
 }
+
+
