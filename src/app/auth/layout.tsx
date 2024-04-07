@@ -18,7 +18,7 @@ const AuthLayout = ({ children }: Readonly<{
     children: React.ReactNode;
 }>)  => {
     return (
-        <div className='flex flex-col min-h-full flex-1 mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 py-5'>
+        <div className='flex flex-col min-h-full flex-1 mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 py-5 bg-body-background'>
             <div className='flex justify-between items-center'>
                 <div className={`${clash.variable} flex items-end space-x-1.5`}>
                     <span className='tracking-wider text-black uppercase font-extrabold text-[10px]'>Spotta</span>

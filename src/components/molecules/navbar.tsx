@@ -14,13 +14,13 @@ export default function Navbar() {
     return (
         <div className='flex justify-between items-center'>
             <div className={`${clash.variable} flex items-end space-x-1.5`}>
-                <span className='tracking-wider text-black uppercase font-extrabold text-[10px]'>Spotta</span>
+                <Link href='/homepage' className='tracking-wider text-black uppercase font-extrabold text-[10px]'>Spotta</Link>
                 <span
                     className='bg-primary-light text-white border-1 py-1 px-1.5 uppercase text-[7px] font-semibold'>NG</span>
             </div>
-            <div className='text-primary-light2 text-md font-semibold'>
+            <Link href='/auth/login' className='text-primary-light2 text-md font-semibold'>
                 Login
-            </div>
+            </Link>
         </div>
     )
 }

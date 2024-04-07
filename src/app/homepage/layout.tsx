@@ -9,12 +9,12 @@ export const metadata: Metadata = {
     title: "Spotta",
 };
 
-export default function RootLayout({
+export default function HomeLayout({
    children,
 }: Readonly<{
 children: React.ReactNode; }>) {
     return (
-        <div className='flex flex-col flex-1 max-h-screen h-screen mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 py-5'>
+        <div className={`${inter.className} flex flex-col flex-1 max-h-screen h-screen mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 py-5`}>
             <Navbar/>
             <div className='flex flex-grow'>
                 {children}

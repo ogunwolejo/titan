@@ -24,12 +24,14 @@ const config: Config = {
       transparent: 'transparent',
       white: '#FFFFFF',
       black: '#101012',
+      black2: '#1E1E1E',
       body: {
         DEFAULT: '#FAFCFD',
         auth: '#F3F7FE',
         alt: '#E5F0FD',
         text: '#D4DCF1',
         header1: '#1E1E1E',
+        background: '#F5F5F5'
       },
       primary: {
         DEFAULT: '#3168FF',
@@ -46,6 +48,7 @@ const config: Config = {
         DEFAULT: '#E95F5F',
       },
       input: '#D4DCF1',
+
     },
     fontFamily: {
       inter: ['Inter'],
