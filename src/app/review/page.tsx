@@ -6,6 +6,7 @@ import {Button} from "@/components/atoms/ui/button";
 import ReviewModal from "@/app/review/common/modal";
 import React, {useState} from "react";
 import useFetchReviewStore from "@/store/review.store";
+import {Posts} from "@/app/review/common/posts";
 
 export default function ReviewsPage() {
     const {reviews, locationSearched} = useFetchReviewStore();
@@ -28,7 +29,23 @@ export default function ReviewsPage() {
                             </ReviewModal>
                         </section>
                     ) : (
-                        <div className='text-title-xsm text-black2'>post</div>
+                        <section className='mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 flex flex-col md:flex-row items-start h-full max-h-full space-y-1 '>
+                            <div className='text-title-xsm text-black2 md:w-8/12 flex flex-col justify-center items-center w-full'>
+                                <div className=' lg:mr-24 lg:my-2 xl:mr-72 xl:my-4'>
+                                    <Posts/>
+                                </div>
+                                <div className=' lg:mr-24 lg:my-2 xl:mr-72 xl:my-4'>
+                                    <Posts/>
+                                </div>
+                                <div className=' lg:mr-24 lg:my-2 xl:mr-72 xl:my-4'>
+                                    <Posts/>
+                                </div>
+                            </div>
+                            <div className='text-title-xsm text-black2 w-4/12 hidden md:block'>
+                                pic
+                            </div>
+
+                        </section>
                     )
                 }
             </main>

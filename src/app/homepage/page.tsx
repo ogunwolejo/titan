@@ -14,7 +14,7 @@ export default function Home() {
   const array = [1, 2, 3, 4,5, 6, 61, 99/*6,7,8, 9, 10*/];
   const router = useRouter();
   const {user} = useAuthStore();
-  const {reviews, queryState, location, setLocation, fetchReviewsHandle} = useLocationQuery();
+  const { queryState, location, setLocation, fetchReviewsHandle} = useLocationQuery();
 
   return (
       <main className="w-full max-h-max">

@@ -22,6 +22,7 @@ import {auth, db} from "@/utils/config";
 import {ILocation} from "@/types/location";
 import {Timestamp} from "@firebase/firestore";
 import useFetchReviewStore from "@/store/review.store";
+import Spinner from "@/components/atoms/ui/spinner";
 
 type IReview = {
     searchedId: string;
@@ -36,6 +37,7 @@ const ReviewModal: React.FC<{children: ReactNode; searchedId: string}> = ({child
     const {createDocument} = useFireStore(Collections.REVIEWS);
     const locationDoc = useFireStore(Collections.LOCATION);
     const {locationSearched} = useFetchReviewStore();
+    const [posting, setPosting] = useState<'calm' | 'fetching' | 'done' | 'error'>('calm');
     const [postReview, setPostReview] = useState<IReview>({
         rating: 0,
         anonymous: false,
@@ -53,6 +55,7 @@ const ReviewModal: React.FC<{children: ReactNode; searchedId: string}> = ({child
     };
 
     const postReviewHandler = async() => {
+        setPosting('fetching');
         try {
             const colRef = collection(db, Collections.LOCATION);
             const q = query(colRef, where("place", '==', locationSearched.toLowerCase()));
@@ -61,8 +64,6 @@ const ReviewModal: React.FC<{children: ReactNode; searchedId: string}> = ({child
             querySnapshot.forEach(el => {
                 locationId = el.id;
             })
-
-            console.log('location Id 1', locationId);
 
             if (locationId.length === 0) {
                 // create a location document in firebase
@@ -77,25 +78,21 @@ const ReviewModal: React.FC<{children: ReactNode; searchedId: string}> = ({child
                 }
                 locationId = newDoc.id;
             }
-
-            // setPostReview(p => ({
-            //     ...p,
-            //     searchedId: locationId
-            // }))
-
-            console.log('location Id 2', locationId);
-
             const reviews = await createDocument({
                 ...postReview,
                 searchedId: locationId,
             });
+
             if (reviews instanceof Error) {
                 throw reviews;
             } else {
                 // Redirection
             }
+
+            setPosting('done');
         } catch (e) {
             console.log((e as Error).message);
+            setPosting('error');
         }
     }
 
@@ -143,10 +140,14 @@ const ReviewModal: React.FC<{children: ReactNode; searchedId: string}> = ({child
                     <span className='font-normal text-title-xsm text-[#484851]'>Post as Anonymous</span>
                 </div>
                 <div className='flex flex-col md:flex-row w-full gap-2'>
-                    <Button variant='default' className='bg-primary md:h-[50px] p-2 uppercase text-white md:w-1/2' disabled={!isDisabled} onClick={postReviewHandler}>Submit</Button>
-                    <DialogClose asChild>
-                        <Button variant='outline' className='bg-white md:h-[50px] p-2 border-[0.5px] border-primary uppercase text-primary md:w-1/2'>Cancel</Button>
-                    </DialogClose>
+                    {
+                       posting == 'fetching' ? <Spinner className='border-primary h-6 w-6'/> : <Button variant='default' className='bg-primary md:h-[50px] p-2 uppercase text-white md:w-1/2' disabled={!isDisabled} onClick={postReviewHandler}>Submit</Button>
+                    }
+                    {
+                        posting !== 'fetching' && <DialogClose asChild>
+                            <Button variant='outline' className='bg-white md:h-[50px] p-2 border-[0.5px] border-primary uppercase text-primary md:w-1/2'>Cancel</Button>
+                        </DialogClose>
+                    }
                 </div>
             </DialogContent>
         </Dialog>
