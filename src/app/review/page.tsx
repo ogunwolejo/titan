@@ -31,6 +31,7 @@ export default function ReviewsPage() {
                     ) : (
                         <section className='mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 flex flex-col md:flex-row items-start h-full max-h-full space-y-1 '>
                             <div className='text-title-xsm text-black2 md:w-8/12 flex flex-col justify-center items-center w-full'>
+
                                 <div className=' lg:mr-24 lg:my-2 xl:mr-72 xl:my-4'>
                                     <Posts/>
                                 </div>

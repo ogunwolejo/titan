@@ -87,7 +87,7 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
         mode: 'onSubmit'
     });
 
-    function onSubmit(values: z.infer<typeof signupFormSchema>) {
+    function onSubmit(values:  any) {
         setIsLoading(true);
         // Login operations
         if (mode == 'login') {
