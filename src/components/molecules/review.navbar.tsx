@@ -101,7 +101,7 @@ export default function ReviewNavbar({className, reviewsCount, queryLocation, re
                         {queryLocation}
                     </h3>
                     <h6 className='font-semibold text-title-xsm text-[#18181B]'>
-                        {`“` + reviewsCount + `”`} Reviews
+                        {`“` + reviewsCount + `”`} Reviews <span className='font-normal'>(People are raving about the selected location)</span>
                     </h6>
                 </div>
 
