@@ -1,11 +1,11 @@
 'use client'
-import React from "react";
+import React, {useMemo} from "react";
 import localFont from "next/font/local";
-import {useAuth} from "@/context/auth.context";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/atoms/ui/avatar";
 import {auth} from '@/utils/config';
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/atoms/ui/button";
+import useAuthStore from "@/store/auth";
 
 const clash = localFont({
     src: '../../fonts/clashdisplaybold.otf',
@@ -16,8 +16,16 @@ const clash = localFont({
 
 export default function Navbar() {
     const router = useRouter();
-    const {user, loading} = useAuth();
-    console.log('@@@ user', user)
+    const {user} = useAuthStore();
+    const nameAbbreviation: string | undefined = useMemo(() => {
+        if (!auth.currentUser || !auth.currentUser.displayName) {
+            return undefined;
+        }
+
+        const fullName: string[] = auth.currentUser.displayName.split(' ');
+        const abbreviatedFirstName: string = fullName[0][0].toUpperCase();
+        return abbreviatedFirstName;
+    }, [auth.currentUser]);
     return (
         <div className='flex justify-between items-center'>
             <div className={`${clash.variable} flex items-center space-x-.5`}>
@@ -33,10 +41,13 @@ export default function Navbar() {
                         Login
                     </Button>
                 ) : (
-                    <Avatar className='w-6 h-6'>
-                        {auth.currentUser?.photoURL && <AvatarImage src={auth.currentUser.photoURL}/>}
-                        <AvatarFallback></AvatarFallback>
-                    </Avatar>
+                    <div className='flex flex-row-reverse justify-start items-center gap-1'>
+                        <Avatar className='w-6 h-6 md:w-8 md:h-8 text-white'>
+                            {(auth.currentUser?.photoURL && true) && <AvatarImage src={auth.currentUser.photoURL}/>}
+                            <AvatarFallback>{nameAbbreviation}</AvatarFallback>
+                        </Avatar>
+                        <div className='text-title-xsm text-black2 capitalize font-medium'>Welcome!</div>
+                    </div>
                 )
             }
         </div>

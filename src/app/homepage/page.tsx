@@ -5,10 +5,17 @@ import {MagnifyingGlassIcon} from '@heroicons/react/24/outline';
 import {Button} from "@/components/atoms/ui/button";
 import {ScrollArea, ScrollBar} from "@/components/atoms/ui/scrollable";
 import Reviews from "@/components/molecules/reviews";
+import useAuthStore from "@/store/auth";
+import {useLocationQuery} from "@/hooks/useLocationQuery";
+import {ChangeEvent} from "react";
+import Spinner from "@/components/atoms/ui/spinner";
 
 export default function Home() {
   const array = [1, 2, 3, 4,5, 6, 61, 99/*6,7,8, 9, 10*/];
   const router = useRouter();
+  const {user} = useAuthStore();
+  const {reviews, queryState, location, setLocation, fetchReviewsHandle} = useLocationQuery();
+
   return (
       <main className="w-full max-h-max">
           <div className='max-h-full h-full min-h-full flex flex-col md:flex-row items-start justify-center gap-x-1'>
@@ -28,7 +35,8 @@ export default function Home() {
 
                   <div className='max-w-xl w-full'>
                       <div className='relative'>
-                          <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 border-2 border-input bg-[#F3F7FE] rounded-md border-r-0'>
+                          <div
+                              className='hidden md:flex absolute inset-y-0 left-0  items-center pl-3 border-2 border-input bg-[#F3F7FE] rounded-md border-r-0'>
                               <MagnifyingGlassIcon className='h-4 w-4 text-form-stroke' aria-hidden='true'/>
                           </div>
                           <Input
@@ -37,13 +45,39 @@ export default function Home() {
                               className='w-full pl-10 pr-3'
                               placeholder='Enter Address'
                               type='search'
-
+                              value={location}
+                              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                  setLocation(e.target.value);
+                              }}
+                              // onKeyDown={async () => {
+                              //     await fetchReviewsHandle();
+                              // }}
                           />
+                          <div className='md:hidden absolute inset-y-0 right-0 flex items-center pr-3 border-2 border-input bg-[#F3F7FE] rounded-md border-l-0'>
+                              {
+                                  queryState != 'fetching' ? <MagnifyingGlassIcon className='h-6 w-6 text-form-stroke' aria-hidden='true'/> : <Spinner className='border-primary h-6 w-6'/>
+                              }
+                          </div>
                       </div>
                   </div>
 
                   <div className='hidden md:block'>
-                      <Button variant='default' size='lg' className='bg-primary text-white font-[500] uppercase title-xsm' onClick={() => router.push('/review')}>Search</Button>
+                      {
+                          queryState != 'fetching' ? (
+                              <Button
+                                  variant='default'
+                                  size='lg'
+                                  className='bg-primary text-white font-[500] uppercase title-xsm'
+                                  onClick={async () => {
+                                      await fetchReviewsHandle();
+                                  }}
+                             >
+                                Search
+                             </Button>
+                         ) : (
+                             <Spinner className='border-primary h-6 w-6'/>
+                         )
+                      }
                   </div>
 
               </section>

@@ -1,4 +1,5 @@
 export enum Collections {
     USER = 'user',
-    REVIEWS = 'reviews'
+    REVIEWS = 'reviews',
+    LOCATION = 'location'
 }

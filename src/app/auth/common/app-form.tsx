@@ -1,6 +1,5 @@
 'use client';
-import React, {useState} from 'react';
-import Link from 'next/link';
+import React, {useState, useMemo} from 'react';
 import Image from 'next/image';
 import {Form, FormControl, FormField, FormLabel, FormMessage, FormItem, FormDescription} from '@/components/atoms/ui/form';
 import {Input} from '@/components/atoms/ui/input';
@@ -38,10 +37,18 @@ const signupFormSchema = z.object({
     confirmPassword: z.string(),
 })
 
+const loginSchema = z.object({
+    email: z.string().email({
+        message: 'user email needed'
+    }),
+    password: z.string(),
+})
+
 
 type FormProps = {
     mode: 'signup' | 'login';
 }
+
 
 export const AppForm: React.FC<FormProps> = ({mode}) => {
     const [securePass, setSecurePass] = useState<'show' | 'hide'>('hide');
@@ -56,16 +63,27 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
         setSecureConfirm(s);
     }
 
-    const form = useForm<z.infer<typeof  signupFormSchema>>({
-        resolver: zodResolver(signupFormSchema),
-        defaultValues: {
+    const defaultValues = useMemo(() => {
+        if (mode == 'login') {
+            return {
+                email: '',
+                password: ''
+            }
+        }
+
+        return {
             username: '',
             email: '',
             password: '',
             lastName: '',
             firstName: '',
             confirmPassword: ''
-        },
+        }
+    }, [mode]);
+
+    const form = useForm<z.infer<typeof signupFormSchema | typeof loginSchema >>({
+        resolver: mode == 'login' ? zodResolver(loginSchema) : zodResolver(signupFormSchema),
+        defaultValues,
         mode: 'onSubmit'
     });
 
@@ -74,18 +92,11 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
         // Login operations
         if (mode == 'login') {
             void emailPasswordLoginHandler({
-                email: values.email!,
-                password: values.password!,
+                email: values.email,
+                password: values.password,
             })
                 .then((resp) => {
                     if (resp instanceof FirebaseError) {
-                        // toast({
-                        //     type: 'background',
-                        //     open: true,
-                        //     variant: 'destructive',
-                        //     title: resp.message,
-                        //     className: 'border-2 border-error text-error',
-                        // });
                         console.error(resp);
                     }
                     // The auth observer will read the change in the user authentication credential - reference App.tsx useEffect
@@ -108,7 +119,11 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
                     if (resp instanceof FirebaseError) {
                         console.error(resp);
                     } else {
-                        await setDocument(resp.uid, resp);
+                        await setDocument(resp.uid, {
+                            email: resp.email,
+                            image: resp.photoURL,
+                            fullName: resp.displayName,
+                        });
                     }
                 })
                 .finally(() => {
@@ -145,7 +160,11 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
                     // });
                     console.error(resp);
                 } else {
-                    await setDocument(resp.uid, resp);
+                    await setDocument(resp.uid, {
+                        email: resp.email,
+                        image: resp.photoURL,
+                        fullName: resp.displayName,
+                    });
                 }
             });
         }
@@ -311,8 +330,14 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
                                             <Spinner className='border-primary h-6 w-6'/>
                                         </div>
                                     ) :
-                                    <Button type='submit' variant='default' size='lg'
-                                            className='w-full uppercase text-white font-normal'>
+                                    <Button
+                                        type='submit'
+                                        variant='default'
+                                        size='lg'
+                                        className='w-full uppercase text-white font-normal'
+                                        //@ts-ignore
+                                        onClick={() => form.handleSubmit(onSubmit)}
+                                    >
                                         {mode === 'signup' ? 'sign up' : 'login'}
                                     </Button>
                                 }
