@@ -33,7 +33,7 @@ type ReviewNavbar = {
     queryLocation: string;
     reviewsCount: number;
 }
-
+const subNavs: string[] = ['schools', 'hospitals', 'bus station', 'airport', 'night life', 'public wifi', 'parking lot', 'security', 'public transport', 'quiet'];
 export default function ReviewNavbar({className, reviewsCount, queryLocation, reviews}: ReviewNavbar) {
     const router = useRouter();
     const {user} = useAuthStore();
@@ -136,9 +136,9 @@ export default function ReviewNavbar({className, reviewsCount, queryLocation, re
                 >
                     <CarouselContent className=''>
                         {
-                            Array.from({ length: 24}).map((_, idx: number) => (
+                            subNavs.map((s, idx: number) => (
                                 <CarouselItem className="basis-4/12 md:basis-1/12" key={idx}>
-                                    <NavCard s={`${idx}a`}/>
+                                    <NavCard s={s}/>
                                 </CarouselItem>
                             ))
                         }

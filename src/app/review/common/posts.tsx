@@ -1,49 +1,87 @@
+'use client';
 import {Avatar, AvatarImage} from "@/components/atoms/ui/avatar";
 import Star from "react-star-rating-component";
+import {IReview} from "@/types/reviews.types";
+import {useEffect, useState} from 'react';
+import { doc, getDoc } from "firebase/firestore";
+import {Collections} from "@/utils/enum";
+import {db} from "@/utils/config";
 
-export const Posts = () => {
+export const Posts = ({reviews}: {reviews: IReview}) => {
+    const [postAuthor, setPostAuthor] = useState<{fullName: string; photo: string | null; loading: 'fetching' | 'done'}>({
+        fullName: '',
+        photo: null,
+        loading: 'fetching'
+    });
+
+    useEffect(() => {
+        (async () => {
+            setPostAuthor(p => ({
+                ...p,
+                loading: 'fetching'
+            }))
+            try {
+                const docRef = doc(db, Collections.USER, reviews.createdBy);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setPostAuthor({
+                        photo: docSnap.data().fullName as string | null,
+                        fullName: docSnap.data().fullName as string,
+                        loading: 'done'
+                    });
+                }
+
+            } catch (e) {
+                console.error(e);
+                setPostAuthor(p => ({
+                    ...p,
+                    loading: 'done'
+                }))
+            }
+        }) ()
+    }, []);
+
+
     return (
-        <div className='w-full bg-transparent xl:w-full'>
+        <div className='w-full my-2 lg:my-3 '>
             <section className='p-4'>
                 <div className='flex flex-row justify-between items-start text-body-header1'>
-                    <div className='flex flex-row gap-1'>
+                    {(postAuthor.loading == 'done' && !reviews.anonymous) ? <div className='flex flex-row gap-1'>
                         <Avatar className='w-6 h-6' >
                             <AvatarImage src='https://github.com/shadcn.png'/>
                         </Avatar>
                         <div className='text-body-header1 flex flex-row gap-1 items-center'>
                             <div className='text-[8px] lg:text-sm font-semibold truncate ... text-wrap'>
-                                James
+                                {postAuthor.fullName.split(' ')[0]}
                             </div>
-                            <p className='text-[8px] lg:text-sm font-semibold truncate ... text-wrap'>Tawain</p>
+                            <p className='text-[8px] lg:text-sm font-semibold truncate ... text-wrap'>{postAuthor.fullName.split(' ')[1]}</p>
                             <p className='font-semibold xl:text-title-xsm text-body-header1 text-[8px]'>5 months</p>
                         </div>
-                    </div>
+                    </div> : (
+                        <div className='flex flex-row gap-1'>
+                            <Avatar className='w-6 h-6'>
+                                <AvatarImage src='https://github.com/shadcn.png'/>
+                            </Avatar>
+                            <div className='text-body-header1 flex flex-row gap-1 items-center'>
+                                <div className='text-[8px] lg:text-sm capitalize font-semibold truncate ... text-wrap'>
+                                    anonymous
+                                </div>
+                                <p className='font-semibold xl:text-title-xsm text-body-header1 text-[8px]'>5 months</p>
+                            </div>
+                        </div>
+                    )}
 
                     <div className='flex h-4 space-x-.8'>
-                        <Star name='rate2'  value={1} starCount={1} editing={false} />
-                        <div className='text-title-xsm font-medium'>{Number(1).toPrecision(2)}</div>
+                        <Star name='rate2' value={1} starCount={1} editing={false}/>
+                        <div className='text-title-xsm font-medium'>{Number(reviews.rating).toPrecision(2)}</div>
                     </div>
                 </div>
                 <div className='text-sm text-black2 font-[400] p-3 my-1'>
-                    <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores debitis dignissimos earum
-                        eum illo laboriosam nemo neque nulla omnis quasi quia, quis ratione velit voluptatem
-                        voluptatibus! Dolores nam repellat voluptas?
-                    </div>
-                    <div>A aperiam, blanditiis consequatur, debitis deleniti distinctio eius eveniet expedita fuga quasi
-                        quibusdam quis totam voluptatum. Autem dolore eos, est, fugiat fugit illo incidunt itaque quam
-                        quo recusandae, repellat temporibus.
-                    </div>
-                    <div>Corporis distinctio, eum impedit iste iure laudantium magni, mollitia nisi pariatur qui,
-                        recusandae sit sunt tenetur vitae voluptatem! Assumenda dicta doloribus, ducimus fugit illum
-                        quos voluptatem. Eum illum libero sunt!
-                    </div>
-                    <div>Accusantium architecto corporis cumque cupiditate debitis dignissimos, earum eius est impedit
-                        in molestias necessitatibus qui quidem voluptatem voluptatum! Aliquam cupiditate ex ipsum
-                        mollitia non? Delectus eius inventore nostrum soluta voluptate.
-                    </div>
+                    {reviews.descriptions}
                 </div>
 
-                <div className='flex flex-row justify-start items-center mt-2 md:mt-3 border-0 border-transparent pl-0 mx-0'>
+                <div
+                    className='flex flex-row justify-start items-center mt-2 md:mt-3 border-0 border-transparent pl-0 mx-0'>
                     <div className='flex flex-row space-x-2'>
                         <div className='flex flex-row justify-center items-center gap-1'>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
