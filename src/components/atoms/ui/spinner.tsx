@@ -6,7 +6,7 @@ type SpinnerProps = {
 };
 
 const Spinner: FC<SpinnerProps> = memo(({className = 'h-4 w-4'}) => (
-    <div className={`animate-spin rounded-full border-2 border-primary ${className}`}></div>
+    <div className={`animate-spin rounded-full border-2 border-solid border-t-transparent ${className}`}></div>
 ));
 
 Spinner.displayName = 'Spinner';

@@ -70,7 +70,7 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
     });
 
     function onSubmit(values: z.infer<typeof signupFormSchema>) {
-        setIsLoading(false);
+        setIsLoading(true);
         // Login operations
         if (mode == 'login') {
             void emailPasswordLoginHandler({
@@ -151,6 +151,9 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
         }
 
     }
+
+    console.log('loading @@@@', isLoading);
+
     return (
         <>
             <Form {...form} >
@@ -305,7 +308,7 @@ export const AppForm: React.FC<FormProps> = ({mode}) => {
                             <div className='w-full flex flex-col items-center space-y-2.5'>
                                 {isLoading ? (
                                         <div className='flex justify-center item-center'>
-                                            <Spinner className='border-primary h-4 w-4'/>
+                                            <Spinner className='border-primary h-6 w-6'/>
                                         </div>
                                     ) :
                                     <Button type='submit' variant='default' size='lg'

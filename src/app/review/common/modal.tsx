@@ -15,6 +15,8 @@ import {Button} from "@/components/atoms/ui/button";
 import SelectDropdown from 'react-dropdown-select';
 import {cn} from "@/utils/cn";
 import Star from 'react-star-rating-component';
+import {useFireStore} from '@/hooks/useFirestore';
+import {Collections} from "@/utils/enum";
 
 type IReview = {
     rating: number;
@@ -24,13 +26,26 @@ type IReview = {
 }
 
 const ReviewModal: React.FC<{children: ReactNode}> = ({children}) => {
+    const {createDocument} = useFireStore(Collections.REVIEWS);
     const [postReview, setPostReview] = useState<IReview>({
         rating: 0,
         anonymous: false,
         description: '',
         tags: [],
     });
-    const isDisabled: boolean = useMemo(() => postReview.tags.length > 0 && postReview.description.trim().length > 0, [postReview.tags, postReview.description]);
+    const isDisabled: boolean = useMemo(() => ((postReview.tags.length > 0 && postReview.description.trim().length > 0)), [postReview.tags, postReview.description]);
+    const postReviewHandler = async() => {
+        try {
+            const reviews = await createDocument(postReview);
+            if (reviews instanceof Error) {
+                throw reviews;
+            } else {
+                // Redirection
+            }
+        } catch (e) {
+            console.log((e as Error).message);
+        }
+    }
 
     return (
         <Dialog>
@@ -61,7 +76,7 @@ const ReviewModal: React.FC<{children: ReactNode}> = ({children}) => {
                     <span className='font-normal text-title-xsm text-[#484851]'>Post as Anonymous</span>
                 </div>
                 <div className='flex flex-col md:flex-row w-full gap-2'>
-                    <Button variant='default' className='bg-primary md:h-[50px] p-2 uppercase text-white md:w-1/2' disabled={isDisabled}>Submit</Button>
+                    <Button variant='default' className='bg-primary md:h-[50px] p-2 uppercase text-white md:w-1/2' disabled={!isDisabled} onClick={postReviewHandler}>Submit</Button>
                     <DialogClose asChild>
                         <Button variant='outline' className='bg-white md:h-[50px] p-2 border-[0.5px] border-primary uppercase text-primary md:w-1/2'>Cancel</Button>
                     </DialogClose>

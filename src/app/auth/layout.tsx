@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
 import React from "react";
-import Navbar from "@/components/molecules/navbar";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/atoms/ui/avatar";
+import {auth} from "@/utils/config";
+import {useRouter} from "next/navigation";
+import {Button} from "@/components/atoms/ui/button";
 
 export const metadata: Metadata = {
     title: "Spotta | Auth",
@@ -17,6 +20,7 @@ const clash = localFont({
 const AuthLayout = ({ children }: Readonly<{
     children: React.ReactNode;
 }>)  => {
+    // const router = useRouter();
     return (
         <div className='flex flex-col min-h-full flex-1 mx-auto max-w-8xl px-8 sm:px-6 lg:px-24 py-5 bg-body-background'>
             <div className='flex justify-between items-center'>
@@ -24,9 +28,18 @@ const AuthLayout = ({ children }: Readonly<{
                     <span className='tracking-wider text-black uppercase font-extrabold text-[10px]'>Spotta</span>
                     <span className='bg-primary-light text-white border-1 py-1 px-1.5 uppercase text-[7px] font-semibold'>NG</span>
                 </div>
-                <div className='text-primary-light2 text-md font-semibold'>
-                    Login
-                </div>
+                {/*{*/}
+                {/*    !auth ? (*/}
+                {/*        <Button variant='link' onClick={() => router.push('/auth/login')} className='no-underline text-primary-light2 text-md font-semibold'>*/}
+                {/*            Login*/}
+                {/*        </Button>*/}
+                {/*    ) : (*/}
+                {/*        <Avatar className='w-6 h-6'>*/}
+                {/*            {auth.currentUser?.photoURL && <AvatarImage src={auth.currentUser.photoURL}/>}*/}
+                {/*            <AvatarFallback></AvatarFallback>*/}
+                {/*        </Avatar>*/}
+                {/*    )*/}
+                {/*}*/}
             </div>
             <div className='flex flex-1'>
                 {children}
